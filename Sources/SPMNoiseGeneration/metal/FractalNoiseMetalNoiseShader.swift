@@ -37,6 +37,30 @@ public struct FractalNoiseMetalParameters {
     let noiseTypeParameters: FractalNoiseMetalTypeParameters
 }
 
+public extension FractalNoiseMetalParameters {
+    init(
+        seed: Int32,
+        fractalNoiseParameters: FractalNoiseParameters
+    ) {
+        self.lacunarity = fractalNoiseParameters.lacunarity
+        self.gain = exp2(-fractalNoiseParameters.hurstExponent)
+        self.startingAmplitude = fractalNoiseParameters.startingAmplitude
+        self.startingFrequency = fractalNoiseParameters.startingFrequency
+        self.octaves = fractalNoiseParameters.octaves
+        switch fractalNoiseParameters.noiseTypeParameters {
+        case .OpenSimplex2(let openSimplexParams):
+            self.noiseType = .OpenSimplex2
+            self.noiseTypeParameters = .OpenSimplex2(
+                OpenSimplex2MetalParameters(
+                    seed: seed,
+                    noise2Variant: openSimplexParams.openSimplex2Variant.toMetalVariant(),
+                    noise3Variant: openSimplexParams.openSimplex3Variant.toMetalVariant(),
+                    noise4Variant: openSimplexParams.openSimplex4Variant.toMetalVariant()))
+
+        }
+    }
+}
+
 public struct FractalNoiseOpenSimplex2MetalParameters {
     let seed: Int
     let noise2Variant: OpenSimplex2MetalNoise2Variant
