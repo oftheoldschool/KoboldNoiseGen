@@ -9,16 +9,17 @@ let package = Package(
             name: "SPMNoiseGeneration",
             targets: ["SPMNoiseGeneration"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/andystanton/SPMOpenSimplex2.git", "0.0.0"..<"0.1.0")
-    ],
     targets: [
         .target(
             name: "SPMNoiseGeneration",
-            dependencies: [
-                .product(name: "SPMOpenSimplex2", package: "spmopensimplex2")]),
+            dependencies: ["SPMOpenSimplex2"]),
+        .target(
+            name: "SPMOpenSimplex2"),
         .testTarget(
             name: "SPMNoiseGenerationTests",
             dependencies: ["SPMNoiseGeneration"]),
+        .testTarget(
+            name: "SPMOpenSimplex2Tests",
+            dependencies: ["SPMOpenSimplex2"]),
     ]
 )
