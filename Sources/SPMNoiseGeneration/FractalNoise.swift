@@ -1,4 +1,4 @@
-import SPMOpenSimplex2
+@_exported import SPMOpenSimplex2
 
 public struct FractalOpenSimplex2NoiseParameters {
     let openSimplex2Variant: OpenSimplex2Noise2Variant
