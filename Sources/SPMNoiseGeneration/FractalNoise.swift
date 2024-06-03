@@ -5,7 +5,7 @@ public struct FractalOpenSimplex2NoiseParameters {
     let openSimplex3Variant: OpenSimplex2Noise3Variant
     let openSimplex4Variant: OpenSimplex2Noise4Variant
 
-    init(
+    public init(
         openSimplex2Variant: OpenSimplex2Noise2Variant = .standard,
         openSimplex3Variant: OpenSimplex2Noise3Variant = .xy,
         openSimplex4Variant: OpenSimplex2Noise4Variant = .xyz
@@ -29,6 +29,15 @@ public struct FractalNoiseParameters {
 
     let startingAmplitude: Float
     let startingFrequency: Float
+
+    public init(noiseTypeParameters: FractalNoiseTypeParameters, octaves: Int32, lacunarity: Float, hurstExponent: Float, startingAmplitude: Float, startingFrequency: Float) {
+        self.noiseTypeParameters = noiseTypeParameters
+        self.octaves = octaves
+        self.lacunarity = lacunarity
+        self.hurstExponent = hurstExponent
+        self.startingAmplitude = startingAmplitude
+        self.startingFrequency = startingFrequency
+    }
 }
 
 public protocol FractalNoise {
