@@ -46,4 +46,4 @@ let noise: Float = openSimplex2.noise3(
     fractalNoiseParameters: fractalNoiseParameters)
 ```
 
-A Metal reference implementation is provided with the same interface as the CPU implementation. To use it, the above code can be changed to use `FractalNoiseMetal()`. However it creates Metal resources which should be managed by the calling app, so direct usage is not recommended with the implementation showing how to access the shader code.
+A Metal reference implementation is provided with the same interface as the CPU implementation. To use it, the above code can be changed to use `FractalNoiseMetal()`. However it creates Metal resources which should be managed by the calling app, so direct usage is not recommended, and the implementation should be used instead as an example of how to generate the Metal shader.
