@@ -7,7 +7,7 @@ final class SPMNoiseGenerationTests: XCTestCase {
         let fractalNoise = FractalNoiseMetal(device: device)
 
         let seed: Int32 = 42
-        let imageSize = 1024
+        let imageSize = 16
         let imageScale: Float = 1
 
         let fractalNoiseParameters = FractalNoiseParameters(

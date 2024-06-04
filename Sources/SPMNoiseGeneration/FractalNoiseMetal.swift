@@ -45,13 +45,14 @@ public class FractalNoiseMetal {
         }
     }
 
-    private func executeNoiseFunction(
+    private func executeNoiseFunction<T>(
         pipeline: MTLComputePipelineState,
         seed: Int32,
         fractalNoiseParameters: FractalNoiseParameters,
-        inBuffer: MTLBuffer,
-        inputCount: Int
+        data: [T]
     ) -> [Float] {
+        let inputCount = data.count
+
         let outByteLength = MemoryLayout<Float>.stride * inputCount
         let outBuffer = device.makeBuffer(length: outByteLength, options: [.storageModeShared])!
 
@@ -82,7 +83,15 @@ public class FractalNoiseMetal {
 
         commandEncoder.setComputePipelineState(pipeline)
         commandEncoder.setBytes(&uniforms, length: MemoryLayout<FractalNoiseMetalParameters>.stride, index: 0)
-        commandEncoder.setBuffer(inBuffer, offset: 0, index: 1)
+
+        let inByteLength = MemoryLayout<T>.stride * inputCount
+        if inByteLength < 4 * 1024 {
+            commandEncoder.setBytes(data, length: inByteLength, index: 1)
+        } else {
+            let inBuffer = device.makeBuffer(length: inByteLength, options: [.storageModeShared])!
+            uploadToBuffer(inBuffer, data: data, offset: 0)
+            commandEncoder.setBuffer(inBuffer, offset: 0, index: 1)
+        }
         commandEncoder.setBuffer(outBuffer, offset: 0, index: 2)
 
         let groupWidth = inputCount > pipeline.maxTotalThreadsPerThreadgroup
@@ -138,15 +147,10 @@ extension FractalNoiseMetal: FractalNoise {
         guard let pipeline = noise3Pipeline else {
             return []
         }
-        let inByteLength = MemoryLayout<SIMD3<Float>>.stride * coords.count
-        let inBuffer = device.makeBuffer(length: inByteLength, options: [.storageModeShared])!
-        uploadToBuffer(inBuffer, data: coords, offset: 0)
-
         return executeNoiseFunction(
             pipeline: pipeline,
             seed: seed,
             fractalNoiseParameters: fractalNoiseParameters,
-            inBuffer: inBuffer,
-            inputCount: coords.count)
+            data: coords)
     }
 }
