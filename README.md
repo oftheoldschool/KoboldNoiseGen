@@ -4,17 +4,19 @@ A Swift Package containing a fractional Brownian Motion implementation over a no
 
 ## Modules
 
+Each noise module comes with two implementations:
+1. Swift implementation that runs on the CPU
+2. Swift code for generating a Metal Shading Language Kernel that can be run on the GPU
+
+The use case for the second approach is for a Metal project in Swift Playgrounds where Metal shader files can't be used directly but shader code must be provided as a string to load into a MTLLibrary.
+
 ### SPM Noise Generation
 
-Contains the fractional Brownian Motion implementation. 
+Fractional Brownian Motion implementation over a noise function.
 
 ### SPM Open Simplex 2
 
-Contains a port of [KdotJPG](https://github.com/KdotJPG)'s [Open Simplex 2](https://github.com/KdotJPG/OpenSimplex2) for Swift with two flavours:
-1. Swift implementation that runs on the CPU
-2. Swift code for generating Metal Shading Language implementation that can be run on the GPU
-
-The use case for the second approach is for a Metal project in Swift Playgrounds where Metal shader files can't be used directly but shader code must be provided as a string to load into a MTLLibrary.
+A port of [KdotJPG](https://github.com/KdotJPG)'s [Open Simplex 2](https://github.com/KdotJPG/OpenSimplex2) for Swift/Metal.
 
 ## Usage
 
