@@ -2,10 +2,9 @@
 
 A Swift Package containing a fractional Brownian Motion implementation over a noise function.
 
+## Modules
 
-## Modules
-
-### SPM Noise Generation
+### SPM Noise Generation
 
 Contains the fractional Brownian Motion implementation. 
 
