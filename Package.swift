@@ -7,17 +7,17 @@ let package = Package(
     products: [
         .library(
             name: "SPMNoiseGeneration",
-            targets: ["SPMNoiseGeneration"]),
+            targets: ["SPMFractalNoise", "SPMOpenSimplex2"]),
     ],
     targets: [
         .target(
-            name: "SPMNoiseGeneration",
+            name: "SPMFractalNoise",
             dependencies: ["SPMOpenSimplex2"]),
         .target(
             name: "SPMOpenSimplex2"),
         .testTarget(
-            name: "SPMNoiseGenerationTests",
-            dependencies: ["SPMNoiseGeneration"]),
+            name: "SPMFractalNoiseTests",
+            dependencies: ["SPMFractalNoise"]),
         .testTarget(
             name: "SPMOpenSimplex2Tests",
             dependencies: ["SPMOpenSimplex2"]),

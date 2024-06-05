@@ -1,6 +1,6 @@
 # SPM Noise Generation
 
-A Swift Package containing a fractional Brownian Motion implementation over a noise function.
+A Swift Package containing noise generation functionality.
 
 ## Modules
 
@@ -10,7 +10,7 @@ Each noise module comes with two implementations:
 
 The use case for the second approach is for a Metal project in Swift Playgrounds where Metal shader files can't be used directly but shader code must be provided as a string to load into a MTLLibrary.
 
-### SPM Noise Generation
+### SPM Fractal Noise
 
 Fractional Brownian Motion implementation over a noise function.
 
@@ -25,7 +25,7 @@ Define a dependency from the source package to this one ([Swift Package Manager 
 To use the CPU implementation you can run:
 
 ```swift
-import SPMNoiseGeneration
+import SPMFractalNoise
 
 ...
 

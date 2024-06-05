@@ -1,7 +1,7 @@
 import XCTest
-@testable import SPMNoiseGeneration
+@testable import SPMFractalNoise
 
-final class SPMNoiseGenerationTests: XCTestCase {
+final class SPMFractalNoiseTests: XCTestCase {
     func testExample() throws {
         let device = MTLCreateSystemDefaultDevice()!
         let fractalNoise = FractalNoiseMetal(device: device)
