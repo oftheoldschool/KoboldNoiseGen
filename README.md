@@ -33,7 +33,9 @@ let fractalNoise = FractalNoiseCPU()
 
 let fractalNoiseParameters = FractalNoiseParameters(
     noiseTypeParameters: .OpenSimplex2(
-        FractalOpenSimplex2NoiseParameters(openSimplex3Variant: .xz)),
+        OpenSimplex2NoiseParameters(
+            seed: 42,
+            noise3Variant: .xz)),
     octaves: 8,
     lacunarity: 2,
     hurstExponent: 1.5,
@@ -41,9 +43,8 @@ let fractalNoiseParameters = FractalNoiseParameters(
     startingFrequency: 1)
 
 let noise: Float = openSimplex2.noise3(
-    seed: 42, 
-    coord: SIMD3<Float>(4.3, 2.0, 1.4), 
-    fractalNoiseParameters: fractalNoiseParameters)
+    fractalNoiseParameters: fractalNoiseParameters,
+    coord: SIMD3<Float>(4.3, 2.0, 1.4))
 ```
 
 A Metal reference implementation is provided with the same interface as the CPU implementation. To use it, the above code can be changed to use `FractalNoiseMetal()`. However it creates Metal resources which should be managed by the calling app, so direct usage is not recommended, and the implementation should be used instead as an example of how to generate the Metal shader.
