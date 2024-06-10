@@ -9,38 +9,33 @@ public class FractalNoiseCPU {
     }
 
     private func getNoise3Value(
-        seed: Int32,
-        coord: SIMD3<Float>,
-        noiseType: FractalNoiseTypeParameters
+        noiseTypeParameters: FractalNoiseTypeParameters,
+        coord: SIMD3<Float>
     ) -> Float {
-        switch noiseType {
+        switch noiseTypeParameters {
         case .OpenSimplex2(let parameters):
             return openSimplex2.noise3(
-                seed: seed,
-                coord: coord,
-                variant: parameters.openSimplex3Variant)
+                openSimplex2NoiseParameters: parameters,
+                coord: coord)
         }
     }
 }
 
 extension FractalNoiseCPU: FractalNoise {
     public func noise3(
-        seed: Int32,
-        coords: [SIMD3<Float>],
-        fractalNoiseParameters: FractalNoiseParameters
+        fractalNoiseParameters: FractalNoiseParameters,
+        coords: [SIMD3<Float>]
     ) -> [Float] {
         return coords.map {
             noise3(
-                seed: seed,
-                coord: $0,
-                fractalNoiseParameters: fractalNoiseParameters)
+                fractalNoiseParameters: fractalNoiseParameters,
+                coord: $0)
         }
     }
 
     public func noise3(
-        seed: Int32,
-        coord: SIMD3<Float>,
-        fractalNoiseParameters: FractalNoiseParameters
+        fractalNoiseParameters: FractalNoiseParameters,
+        coord: SIMD3<Float>
     ) -> Float {
         var fractalNoise = Float.zero
         var amplitude = fractalNoiseParameters.startingAmplitude
@@ -49,9 +44,8 @@ extension FractalNoiseCPU: FractalNoise {
 
         for _ in 0..<fractalNoiseParameters.octaves {
             fractalNoise += amplitude * getNoise3Value(
-                seed: seed,
-                coord: coord * frequency,
-                noiseType: fractalNoiseParameters.noiseTypeParameters)
+                noiseTypeParameters: fractalNoiseParameters.noiseTypeParameters,
+                coord: coord * frequency)
 
             frequency *= fractalNoiseParameters.lacunarity
             amplitude *= gain

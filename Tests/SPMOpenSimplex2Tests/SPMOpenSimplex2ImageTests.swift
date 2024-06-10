@@ -6,8 +6,12 @@ final class SPMOpenSimplex2ImageTests: XCTestCase {
     func testExample() throws {
         let device = MTLCreateSystemDefaultDevice()!
         let noiseMachine = OpenSimplex2Metal(device: device)
+        let openSimplex2NoiseParameters = OpenSimplex2NoiseParameters(
+            seed: 42,
+            noise2Variant: .standard,
+            noise3Variant: .xy,
+            noise4Variant: .xyz)
 
-        let seed: Int32 = 42
         let imageSize = 1024
         let imageScale: Float = 0.1
 
@@ -21,9 +25,8 @@ final class SPMOpenSimplex2ImageTests: XCTestCase {
         }
 
         let noise = noiseMachine.noise3(
-            seed: seed,
-            coords: input,
-            variant: .xz)
+            openSimplex2NoiseParameters: openSimplex2NoiseParameters,
+            coords: input)
 
         for y in 0..<imageSize {
             var rowString = ""

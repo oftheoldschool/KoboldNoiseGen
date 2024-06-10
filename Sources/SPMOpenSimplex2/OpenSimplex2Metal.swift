@@ -1,4 +1,3 @@
-
 import Metal
 import Foundation
 
@@ -41,10 +40,7 @@ public class OpenSimplex2Metal {
 
     private func executeNoiseFunction(
         pipeline: MTLComputePipelineState,
-        seed: Int32,
-        noise2Variant: OpenSimplex2Noise2Variant = .standard,
-        noise3Variant: OpenSimplex2Noise3Variant = .xy,
-        noise4Variant: OpenSimplex2Noise4Variant = .xyz,
+        openSimplex2NoiseParameters: OpenSimplex2NoiseParameters,
         inBuffer: MTLBuffer,
         inputCount: Int
     ) -> [Float] {
@@ -56,11 +52,7 @@ public class OpenSimplex2Metal {
             return []
         }
 
-        var uniforms = OpenSimplex2MetalParameters(
-            seed: seed,
-            noise2Variant: noise2Variant.toMetalVariant(),
-            noise3Variant: noise3Variant.toMetalVariant(),
-            noise4Variant: noise4Variant.toMetalVariant())
+        var uniforms = openSimplex2NoiseParameters.toMetal()
 
         commandEncoder.setComputePipelineState(pipeline)
         commandEncoder.setBytes(&uniforms, length: MemoryLayout<OpenSimplex2MetalParameters>.stride, index: 0)
@@ -101,19 +93,19 @@ public class OpenSimplex2Metal {
 }
 
 extension OpenSimplex2Metal: OpenSimplex2 {
-    public func noise2(seed: Int32, coord: SIMD2<Double>, variant: OpenSimplex2Noise2Variant) -> Float {
-        return noise2(seed: seed, coords: [SIMD2<Float>(coord)], variant: variant)[0]
+    public func noise2(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD2<Double>) -> Float {
+        return noise2(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: [SIMD2<Float>(coord)])[0]
     }
 
-    public func noise2(seed: Int32, coords: [SIMD2<Double>], variant: OpenSimplex2Noise2Variant) -> [Float] {
-        return noise2(seed: seed, coords: coords.map(SIMD2<Float>.init), variant: variant)
+    public func noise2(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD2<Double>]) -> [Float] {
+        return noise2(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: coords.map(SIMD2<Float>.init))
     }
 
-    public func noise2(seed: Int32, coord: SIMD2<Float>, variant: OpenSimplex2Noise2Variant) -> Float {
-        return noise2(seed: seed, coords: [coord], variant: variant)[0]
+    public func noise2(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD2<Float>) -> Float {
+        return noise2(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: [coord])[0]
     }
 
-    public func noise2(seed: Int32, coords: [SIMD2<Float>], variant: OpenSimplex2Noise2Variant) -> [Float] {
+    public func noise2(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD2<Float>]) -> [Float] {
         guard let pipeline = noise2Pipeline else {
             return []
         }
@@ -123,25 +115,24 @@ extension OpenSimplex2Metal: OpenSimplex2 {
 
         return executeNoiseFunction(
             pipeline: pipeline,
-            seed: seed,
-            noise2Variant: variant,
+            openSimplex2NoiseParameters: openSimplex2NoiseParameters,
             inBuffer: inBuffer,
             inputCount: coords.count)
     }
 
-    public func noise3(seed: Int32, coord: SIMD3<Double>, variant: OpenSimplex2Noise3Variant) -> Float {
-        return noise3(seed: seed, coords: [SIMD3<Float>(coord)], variant: variant)[0]
+    public func noise3(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD3<Double>) -> Float {
+        return noise3(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: [SIMD3<Float>(coord)])[0]
     }
 
-    public func noise3(seed: Int32, coords: [SIMD3<Double>], variant: OpenSimplex2Noise3Variant) -> [Float] {
-        return noise3(seed: seed, coords: coords.map(SIMD3<Float>.init), variant: variant)
+    public func noise3(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD3<Double>]) -> [Float] {
+        return noise3(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: coords.map(SIMD3<Float>.init))
     }
 
-    public func noise3(seed: Int32, coord: SIMD3<Float>, variant: OpenSimplex2Noise3Variant) -> Float {
-        return noise3(seed: seed, coords: [coord], variant: variant)[0]
+    public func noise3(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD3<Float>) -> Float {
+        return noise3(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: [coord])[0]
     }
 
-    public func noise3(seed: Int32, coords: [SIMD3<Float>], variant: OpenSimplex2Noise3Variant) -> [Float] {
+    public func noise3(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD3<Float>]) -> [Float] {
         guard let pipeline = noise3Pipeline else {
             return []
         }
@@ -151,29 +142,24 @@ extension OpenSimplex2Metal: OpenSimplex2 {
 
         return executeNoiseFunction(
             pipeline: pipeline,
-            seed: seed,
-            noise3Variant: variant,
+            openSimplex2NoiseParameters: openSimplex2NoiseParameters,
             inBuffer: inBuffer,
             inputCount: coords.count)
     }
 
-    public func noise4(seed: Int32, coord: SIMD4<Double>, variant: OpenSimplex2Noise4Variant) -> Float {
-        return noise4(seed: seed, coords: [SIMD4<Float>(coord)], variant: variant)[0]
+    public func noise4(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD4<Double>) -> Float {
+        return noise4(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: [SIMD4<Float>(coord)])[0]
     }
 
-    public func noise4(seed: Int32, coords: [SIMD4<Double>], variant: OpenSimplex2Noise4Variant) -> [Float] {
-        return noise4(seed: seed, coords: coords.map(SIMD4<Float>.init), variant: variant)
+    public func noise4(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD4<Double>]) -> [Float] {
+        return noise4(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: coords.map(SIMD4<Float>.init))
     }
 
-    public func noise4(seed: Int32, coord: SIMD4<Float>, variant: OpenSimplex2Noise4Variant) -> Float {
-        return noise4(seed: seed, coords: [coord], variant: variant)[0]
+    public func noise4(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD4<Float>) -> Float {
+        return noise4(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coords: [coord])[0]
     }
 
-    public func noise4(
-        seed: Int32,
-        coords: [SIMD4<Float>],
-        variant: OpenSimplex2Noise4Variant
-    ) -> [Float] {
+    public func noise4(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD4<Float>]) -> [Float] {
         guard let pipeline = noise4Pipeline else {
             return []
         }
@@ -183,15 +169,14 @@ extension OpenSimplex2Metal: OpenSimplex2 {
 
         return executeNoiseFunction(
             pipeline: pipeline,
-            seed: seed,
-            noise4Variant: variant,
+            openSimplex2NoiseParameters: openSimplex2NoiseParameters,
             inBuffer: inBuffer,
             inputCount: coords.count)
     }
 }
 
 public extension OpenSimplex2Noise2Variant {
-    func toMetalVariant() -> OpenSimplex2MetalNoise2Variant {
+    func toMetal() -> OpenSimplex2MetalNoise2Variant {
         return switch self {
         case .standard: OpenSimplex2MetalNoise2Variant.standard
         case .x: OpenSimplex2MetalNoise2Variant.x
@@ -200,7 +185,7 @@ public extension OpenSimplex2Noise2Variant {
 }
 
 public extension OpenSimplex2Noise3Variant {
-    func toMetalVariant() -> OpenSimplex2MetalNoise3Variant {
+    func toMetal() -> OpenSimplex2MetalNoise3Variant {
         return switch self {
         case .xy: OpenSimplex2MetalNoise3Variant.xy
         case .xz: OpenSimplex2MetalNoise3Variant.xz
@@ -210,7 +195,7 @@ public extension OpenSimplex2Noise3Variant {
 }
 
 public extension OpenSimplex2Noise4Variant {
-    func toMetalVariant() -> OpenSimplex2MetalNoise4Variant {
+    func toMetal() -> OpenSimplex2MetalNoise4Variant {
         return switch self {
         case .xyz: OpenSimplex2MetalNoise4Variant.xyz
         case .xyz_xy: OpenSimplex2MetalNoise4Variant.xyz_xy
@@ -218,6 +203,16 @@ public extension OpenSimplex2Noise4Variant {
         case .xy_zw: OpenSimplex2MetalNoise4Variant.xy_zw
         case .fallback: OpenSimplex2MetalNoise4Variant.fallback
         }
+    }
+}
+
+public extension OpenSimplex2NoiseParameters {
+    func toMetal() -> OpenSimplex2MetalParameters {
+        return OpenSimplex2MetalParameters(
+            seed: self.seed,
+            noise2Variant: self.noise2Variant.toMetal(),
+            noise3Variant: self.noise3Variant.toMetal(),
+            noise4Variant: self.noise4Variant.toMetal())
     }
 }
 

@@ -6,13 +6,14 @@ final class SPMFractalNoiseTests: XCTestCase {
         let device = MTLCreateSystemDefaultDevice()!
         let fractalNoise = FractalNoiseMetal(device: device)
 
-        let seed: Int32 = 42
-        let imageSize = 16
+        let imageSize = 1024
         let imageScale: Float = 1
 
         let fractalNoiseParameters = FractalNoiseParameters(
             noiseTypeParameters: .OpenSimplex2(
-                FractalOpenSimplex2NoiseParameters(openSimplex3Variant: .xz)),
+                OpenSimplex2NoiseParameters(
+                    seed: 420,
+                    noise3Variant: .xz)),
             octaves: 8,
             lacunarity: 2,
             hurstExponent: 1,
@@ -29,9 +30,8 @@ final class SPMFractalNoiseTests: XCTestCase {
         }
 
         let noise = fractalNoise.noise3(
-            seed: seed,
-            coords: coords,
-            fractalNoiseParameters: fractalNoiseParameters)
+            fractalNoiseParameters: fractalNoiseParameters,
+            coords: coords)
 
         var lowest: Int = 0
         var highest: Int = 0

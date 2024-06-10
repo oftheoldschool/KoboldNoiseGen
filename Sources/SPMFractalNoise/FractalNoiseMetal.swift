@@ -47,7 +47,6 @@ public class FractalNoiseMetal {
 
     private func executeNoiseFunction<T>(
         pipeline: MTLComputePipelineState,
-        seed: Int32,
         fractalNoiseParameters: FractalNoiseParameters,
         data: [T]
     ) -> [Float] {
@@ -64,12 +63,7 @@ public class FractalNoiseMetal {
         let (noiseType, noiseTypeParameters) = switch fractalNoiseParameters.noiseTypeParameters {
         case .OpenSimplex2(let params):
             (FractalNoiseMetalType.OpenSimplex2,
-             FractalNoiseMetalTypeParameters.OpenSimplex2(
-                OpenSimplex2MetalParameters(
-                    seed: seed,
-                    noise2Variant: params.openSimplex2Variant.toMetalVariant(),
-                    noise3Variant: params.openSimplex3Variant.toMetalVariant(),
-                    noise4Variant: params.openSimplex4Variant.toMetalVariant())))
+             FractalNoiseMetalTypeParameters.OpenSimplex2(params.toMetal()))
         }
 
         var uniforms = FractalNoiseMetalParameters(
@@ -129,28 +123,25 @@ public class FractalNoiseMetal {
 
 extension FractalNoiseMetal: FractalNoise {
     public func noise3(
-        seed: Int32,
-        coord: SIMD3<Float>,
-        fractalNoiseParameters: FractalNoiseParameters
+        fractalNoiseParameters: FractalNoiseParameters,
+        coord: SIMD3<Float>
     ) -> Float {
         return noise3(
-            seed: seed,
-            coords: [coord],
-            fractalNoiseParameters: fractalNoiseParameters)[0]
+            fractalNoiseParameters: fractalNoiseParameters,
+            coords: [coord])[0]
     }
 
     public func noise3(
-        seed: Int32,
-        coords: [SIMD3<Float>],
-        fractalNoiseParameters: FractalNoiseParameters
+        fractalNoiseParameters: FractalNoiseParameters,
+        coords: [SIMD3<Float>]
     ) -> [Float] {
         guard let pipeline = noise3Pipeline else {
             return []
         }
         return executeNoiseFunction(
             pipeline: pipeline,
-            seed: seed,
             fractalNoiseParameters: fractalNoiseParameters,
             data: coords)
     }
 }
+

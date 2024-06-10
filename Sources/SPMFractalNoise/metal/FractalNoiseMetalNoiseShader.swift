@@ -38,10 +38,7 @@ public struct FractalNoiseMetalParameters {
 }
 
 public extension FractalNoiseMetalParameters {
-    init(
-        seed: Int32,
-        fractalNoiseParameters: FractalNoiseParameters
-    ) {
+    init(fractalNoiseParameters: FractalNoiseParameters) {
         self.lacunarity = fractalNoiseParameters.lacunarity
         self.gain = exp2(-fractalNoiseParameters.hurstExponent)
         self.startingAmplitude = fractalNoiseParameters.startingAmplitude
@@ -50,13 +47,7 @@ public extension FractalNoiseMetalParameters {
         switch fractalNoiseParameters.noiseTypeParameters {
         case .OpenSimplex2(let openSimplexParams):
             self.noiseType = .OpenSimplex2
-            self.noiseTypeParameters = .OpenSimplex2(
-                OpenSimplex2MetalParameters(
-                    seed: seed,
-                    noise2Variant: openSimplexParams.openSimplex2Variant.toMetalVariant(),
-                    noise3Variant: openSimplexParams.openSimplex3Variant.toMetalVariant(),
-                    noise4Variant: openSimplexParams.openSimplex4Variant.toMetalVariant()))
-
+            self.noiseTypeParameters = .OpenSimplex2(openSimplexParams.toMetal())
         }
     }
 }
@@ -117,7 +108,7 @@ public class FractalNoiseMetalShaderLoader {
         struct FractalNoiseMetalParameters {
             float lacunarity;
             float gain;
-    
+
             float startingAmplitude;
             float startingFrequency;
 

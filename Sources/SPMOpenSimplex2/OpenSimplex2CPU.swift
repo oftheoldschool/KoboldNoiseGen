@@ -792,50 +792,50 @@ public class OpenSimplex2CPU {
 }
 
 extension OpenSimplex2CPU: OpenSimplex2 {
-    public func noise2(seed: Int32, coord: SIMD2<Double>, variant: OpenSimplex2Noise2Variant) -> Float {
-        return switch variant {
+    public func noise2(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD2<Double>) -> Float {
+        return switch openSimplex2NoiseParameters.noise2Variant {
         case .standard:
-            noise2_Standard(seed: Int(seed), x: coord.x, y: coord.y)
+            noise2_Standard(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y)
         case .x:
-            noise2_ImproveX(seed: Int(seed), x: coord.x, y: coord.y)
+            noise2_ImproveX(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y)
         }
     }
 
-    public func noise3(seed: Int32, coord: SIMD3<Double>, variant: OpenSimplex2Noise3Variant) -> Float {
-        return switch variant {
+    public func noise3(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD3<Double>) -> Float {
+        return switch openSimplex2NoiseParameters.noise3Variant {
         case .xy:
-            noise3_ImproveXY(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z)
+            noise3_ImproveXY(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z)
         case .xz:
-            noise3_ImproveXZ(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z)
+            noise3_ImproveXZ(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z)
         case .fallback:
-            noise3_Fallback(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z)
+            noise3_Fallback(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z)
         }
     }
 
-    public func noise4(seed: Int32, coord: SIMD4<Double>, variant: OpenSimplex2Noise4Variant) -> Float {
-        return switch variant {
+    public func noise4(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coord: SIMD4<Double>) -> Float {
+        return switch openSimplex2NoiseParameters.noise4Variant {
         case .xyz:
-            noise4_ImproveXYZ(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
+            noise4_ImproveXYZ(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
         case .xyz_xy:
-            noise4_ImproveXYZ_ImproveXY(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
+            noise4_ImproveXYZ_ImproveXY(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
         case .xyz_xz:
-            noise4_ImproveXYZ_ImproveXZ(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
+            noise4_ImproveXYZ_ImproveXZ(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
         case .xy_zw:
-            noise4_ImproveXY_ImproveZW(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
+            noise4_ImproveXY_ImproveZW(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
         case .fallback:
-            noise4_Fallback(seed: Int(seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
+            noise4_Fallback(seed: Int(openSimplex2NoiseParameters.seed), x: coord.x, y: coord.y, z: coord.z, w: coord.w)
         }
     }
 
-    public func noise2(seed: Int32, coords: [SIMD2<Double>], variant: OpenSimplex2Noise2Variant) -> [Float] {
-        return coords.map { noise2(seed: seed, coord: $0, variant: variant) }
+    public func noise2(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD2<Double>]) -> [Float] {
+        return coords.map { noise2(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coord: $0) }
     }
 
-    public func noise3(seed: Int32, coords: [SIMD3<Double>], variant: OpenSimplex2Noise3Variant) -> [Float] {
-        return coords.map { noise3(seed: seed, coord: $0, variant: variant) }
+    public func noise3(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD3<Double>]) -> [Float] {
+        return coords.map { noise3(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coord: $0) }
     }
 
-    public func noise4(seed: Int32, coords: [SIMD4<Double>], variant: OpenSimplex2Noise4Variant) -> [Float] {
-        return coords.map { noise4(seed: seed, coord: $0, variant: variant) }
+    public func noise4(openSimplex2NoiseParameters: OpenSimplex2NoiseParameters, coords: [SIMD4<Double>]) -> [Float] {
+        return coords.map { noise4(openSimplex2NoiseParameters: openSimplex2NoiseParameters, coord: $0) }
     }
 }
