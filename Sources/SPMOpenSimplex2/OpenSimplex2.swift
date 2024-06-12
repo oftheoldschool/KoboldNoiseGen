@@ -18,10 +18,10 @@ public enum OpenSimplex2Noise4Variant {
 }
 
 public struct OpenSimplex2NoiseParameters {
-    public let seed: Int32
-    public let noise2Variant: OpenSimplex2Noise2Variant
-    public let noise3Variant: OpenSimplex2Noise3Variant
-    public let noise4Variant: OpenSimplex2Noise4Variant
+    public var seed: Int32
+    public var noise2Variant: OpenSimplex2Noise2Variant
+    public var noise3Variant: OpenSimplex2Noise3Variant
+    public var noise4Variant: OpenSimplex2Noise4Variant
 
     public init(
         seed: Int32 = 0,
