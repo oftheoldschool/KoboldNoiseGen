@@ -5,14 +5,14 @@ public enum FractalNoiseTypeParameters {
 }
 
 public struct FractalNoiseParameters {
-    let noiseTypeParameters: FractalNoiseTypeParameters
+    public let noiseTypeParameters: FractalNoiseTypeParameters
 
-    let octaves: Int32
-    let lacunarity: Float
-    let hurstExponent: Float
+    public let octaves: Int32
+    public let lacunarity: Float
+    public let hurstExponent: Float
 
-    let startingAmplitude: Float
-    let startingFrequency: Float
+    public let startingAmplitude: Float
+    public let startingFrequency: Float
 
     public init(
         noiseTypeParameters: FractalNoiseTypeParameters,
