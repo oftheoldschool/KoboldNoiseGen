@@ -11,6 +11,9 @@ public struct FractalNoiseParameters {
     public var hurstExponent: Float
     public var startingAmplitude: Float
     public var startingFrequency: Float
+    public var coordinateScale: Float
+    public var warpIterations: Int32
+    public var warpScale: Float
 
     public init(
         noiseTypeParameters: FractalNoiseTypeParameters,
@@ -18,7 +21,10 @@ public struct FractalNoiseParameters {
         lacunarity: Float,
         hurstExponent: Float,
         startingAmplitude: Float,
-        startingFrequency: Float
+        startingFrequency: Float,
+        coordinateScale: Float,
+        warpIterations: Int32,
+        warpScale: Float
     ) {
         self.noiseTypeParameters = noiseTypeParameters
         self.octaves = octaves
@@ -26,6 +32,9 @@ public struct FractalNoiseParameters {
         self.hurstExponent = hurstExponent
         self.startingAmplitude = startingAmplitude
         self.startingFrequency = startingFrequency
+        self.coordinateScale = coordinateScale
+        self.warpIterations = warpIterations
+        self.warpScale = warpScale
     }
 }
 

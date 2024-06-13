@@ -18,7 +18,10 @@ final class SPMFractalNoiseTests: XCTestCase {
             lacunarity: 2,
             hurstExponent: 1,
             startingAmplitude: 1,
-            startingFrequency: 0.0025)
+            startingFrequency: 0.0025,
+            coordinateScale: 0.5,
+            warpIterations: 4,
+            warpScale: 200)
 
         var outputString = "P2\n\(imageSize) \(imageSize)\n255\n"
 
