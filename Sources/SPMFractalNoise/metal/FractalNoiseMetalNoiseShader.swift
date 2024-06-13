@@ -177,6 +177,7 @@ public class FractalNoiseMetalShaderLoader {
             float coordinateScale;
 
             FractalNoiseMetalType noiseType;
+            int pad0;
 
             FractalNoiseMetalTypeParameters noiseTypeParameters;
         };
