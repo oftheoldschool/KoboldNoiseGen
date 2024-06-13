@@ -58,25 +58,6 @@ public extension FractalNoiseMetalParameters {
     }
 }
 
-public struct FractalNoiseOpenSimplex2MetalParameters {
-    let seed: Int
-    let noise2Variant: OpenSimplex2MetalNoise2Variant
-    let noise3Variant: OpenSimplex2MetalNoise3Variant
-    let noise4Variant: OpenSimplex2MetalNoise4Variant
-
-    public init(
-        seed: Int,
-        noise2Variant: OpenSimplex2MetalNoise2Variant = .standard,
-        noise3Variant: OpenSimplex2MetalNoise3Variant = .xy,
-        noise4Variant: OpenSimplex2MetalNoise4Variant = .xyz
-    ) {
-        self.seed = seed
-        self.noise2Variant = noise2Variant
-        self.noise3Variant = noise3Variant
-        self.noise4Variant = noise4Variant
-    }
-}
-
 public class FractalNoiseMetalShaderLoader {
     public let shader: String
     public let functionNames: [String]
@@ -177,7 +158,6 @@ public class FractalNoiseMetalShaderLoader {
             float coordinateScale;
 
             FractalNoiseMetalType noiseType;
-            int pad0;
 
             FractalNoiseMetalTypeParameters noiseTypeParameters;
         };
