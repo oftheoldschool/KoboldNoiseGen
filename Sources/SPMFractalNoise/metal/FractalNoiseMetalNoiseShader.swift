@@ -37,7 +37,6 @@ public struct FractalNoiseMetalParameters {
     public let coordinateScale: Float
 
     private let pad0: Float = 0
-    private let pad1: Float = 0
 
     let noiseType: FractalNoiseMetalType
     let noiseTypeParameters: FractalNoiseMetalTypeParameters
