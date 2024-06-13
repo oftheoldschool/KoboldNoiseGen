@@ -60,20 +60,7 @@ public class FractalNoiseMetal {
             return []
         }
 
-        let (noiseType, noiseTypeParameters) = switch fractalNoiseParameters.noiseTypeParameters {
-        case .OpenSimplex2(let params):
-            (FractalNoiseMetalType.OpenSimplex2,
-             FractalNoiseMetalTypeParameters.OpenSimplex2(params.toMetal()))
-        }
-
-        var uniforms = FractalNoiseMetalParameters(
-            lacunarity: fractalNoiseParameters.lacunarity,
-            gain: exp2(-fractalNoiseParameters.hurstExponent),
-            startingAmplitude: fractalNoiseParameters.startingAmplitude,
-            startingFrequency: fractalNoiseParameters.startingFrequency,
-            octaves: fractalNoiseParameters.octaves,
-            noiseType: noiseType,
-            noiseTypeParameters: noiseTypeParameters)
+        var uniforms = FractalNoiseMetalParameters(fractalNoiseParameters: fractalNoiseParameters)
 
         commandEncoder.setComputePipelineState(pipeline)
         commandEncoder.setBytes(&uniforms, length: MemoryLayout<FractalNoiseMetalParameters>.stride, index: 0)
