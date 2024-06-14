@@ -66,7 +66,7 @@ public class FractalNoiseMetalNoise3: FractalNoiseMetalNoiseShader {
         float3 noiseCoord = inCoord;
         float fractalNoise = 0;
 
-        FNOISE_REPEAT(16, FBM_NOISE3_BASE)
+        FNOISE_REPEAT(8, FBM_NOISE3_BASE)
 
         return min(max(fractalNoise, -1.f), 1.f);
     }
@@ -87,7 +87,7 @@ public class FractalNoiseMetalNoise3: FractalNoiseMetalNoiseShader {
         float3 noiseCoord = inCoord * uniforms.coordinateScale;
         float fractalNoise = 0;
 
-        FNOISE_REPEAT(16, FBM_NOISE3_WARP)
+        FNOISE_REPEAT(6, FBM_NOISE3_WARP)
 
         return fractalNoise;
     }
