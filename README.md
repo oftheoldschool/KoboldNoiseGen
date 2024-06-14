@@ -31,16 +31,20 @@ import SPMFractalNoise
 
 let fractalNoise = FractalNoiseCPU()
 
+
 let fractalNoiseParameters = FractalNoiseParameters(
     noiseTypeParameters: .OpenSimplex2(
         OpenSimplex2NoiseParameters(
-            seed: 42,
+            seed: 420,
             noise3Variant: .xz)),
     octaves: 8,
     lacunarity: 2,
-    hurstExponent: 1.5,
+    hurstExponent: 1,
     startingAmplitude: 1,
-    startingFrequency: 1)
+    startingFrequency: 0.0025,
+    coordinateScale: 0.5,
+    warpIterations: 3,
+    warpScale: 200)
 
 let noise: Float = openSimplex2.noise3(
     fractalNoiseParameters: fractalNoiseParameters,

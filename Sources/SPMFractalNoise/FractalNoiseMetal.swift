@@ -11,10 +11,10 @@ public class FractalNoiseMetal {
     private let noise4Pipeline: MTLComputePipelineState?
 
     public init(
-        device: MTLDevice? = nil,
+        device: MTLDevice = MTLCreateSystemDefaultDevice()!,
         commandQueue: MTLCommandQueue? = nil
     ) {
-        self.device = device ?? MTLCreateSystemDefaultDevice()!
+        self.device = device
         self.commandQueue = commandQueue ?? self.device.makeCommandQueue()
 
         let kernel = """
@@ -28,21 +28,18 @@ public class FractalNoiseMetal {
 
         let library = try! self.device.makeLibrary(source: kernel, options: nil)
 
-        if let noise2Function = library.makeFunction(name: FractalNoiseMetalShaderLoader.noise2FunctionName) {
-            noise2Pipeline = try! self.device.makeComputePipelineState(function: noise2Function)
-        } else {
-            noise2Pipeline = nil
-        }
-        if let noise3Function = library.makeFunction(name: FractalNoiseMetalShaderLoader.noise3FunctionName) {
-            noise3Pipeline = try! self.device.makeComputePipelineState(function: noise3Function)
-        } else {
-            noise3Pipeline = nil
-        }
-        if let noise4Function = library.makeFunction(name: FractalNoiseMetalShaderLoader.noise4FunctionName) {
-            noise4Pipeline = try! self.device.makeComputePipelineState(function: noise4Function)
-        } else {
-            noise4Pipeline = nil
-        }
+        noise2Pipeline = library.makeFunction(name: FractalNoiseMetalShaderLoader.noise2FunctionName)
+            .flatMap {
+                try? device.makeComputePipelineState(function: $0)
+            }
+        noise3Pipeline = library.makeFunction(name: FractalNoiseMetalShaderLoader.noise3FunctionName)
+            .flatMap {
+                try? device.makeComputePipelineState(function: $0)
+            }
+        noise4Pipeline = library.makeFunction(name: FractalNoiseMetalShaderLoader.noise4FunctionName)
+            .flatMap {
+                try? device.makeComputePipelineState(function: $0)
+            }
     }
 
     private func executeNoiseFunction<T>(

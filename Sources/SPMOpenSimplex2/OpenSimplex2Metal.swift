@@ -21,21 +21,18 @@ public class OpenSimplex2Metal {
         """
 
         let library = try! device.makeLibrary(source: kernel, options: nil)
-        if let noise2Function = library.makeFunction(name: OpenSimplex2MetalShaderLoader.noise2FunctionName) {
-            noise2Pipeline = try! device.makeComputePipelineState(function: noise2Function)
-        } else {
-            noise2Pipeline = nil
-        }
-        if let noise3Function = library.makeFunction(name: OpenSimplex2MetalShaderLoader.noise3FunctionName) {
-            noise3Pipeline = try! device.makeComputePipelineState(function: noise3Function)
-        } else {
-            noise3Pipeline = nil
-        }
-        if let noise4Function = library.makeFunction(name: OpenSimplex2MetalShaderLoader.noise4FunctionName) {
-            noise4Pipeline = try! device.makeComputePipelineState(function: noise4Function)
-        } else {
-            noise4Pipeline = nil
-        }
+        noise2Pipeline = library.makeFunction(name: OpenSimplex2MetalShaderLoader.noise2FunctionName)
+            .flatMap {
+                try? device.makeComputePipelineState(function: $0)
+            }
+        noise3Pipeline = library.makeFunction(name: OpenSimplex2MetalShaderLoader.noise3FunctionName)
+            .flatMap {
+                try? device.makeComputePipelineState(function: $0)
+            }
+        noise4Pipeline = library.makeFunction(name: OpenSimplex2MetalShaderLoader.noise4FunctionName)
+            .flatMap {
+                try? device.makeComputePipelineState(function: $0)
+            }
     }
 
     private func executeNoiseFunction(
