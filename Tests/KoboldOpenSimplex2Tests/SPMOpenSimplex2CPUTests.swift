@@ -1,10 +1,11 @@
 import XCTest
 import simd
-@testable import SPMOpenSimplex2
+@testable import KoboldOpenSimplex2
 
-final class SPMOpenSimplex2MetalTests: XCTestCase {
+final class KoboldOpenSimplex2CPUTests: XCTestCase {
     func testExample() throws {
-        let noiseMachine = OpenSimplex2Metal()
+        let noiseMachine = OpenSimplex2CPU()
+
         let openSimplex2NoiseParameters = OpenSimplex2NoiseParameters(
             seed: 42,
             noise2Variant: .standard,

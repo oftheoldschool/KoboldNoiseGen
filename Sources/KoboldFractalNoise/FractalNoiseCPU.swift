@@ -1,4 +1,4 @@
-import SPMOpenSimplex2
+import KoboldOpenSimplex2
 import simd
 
 public class FractalNoiseCPU {

@@ -1,8 +1,8 @@
 import XCTest
 import simd
-@testable import SPMOpenSimplex2
+@testable import KoboldOpenSimplex2
 
-final class SPMOpenSimplex2ImplementationComparison: XCTestCase {
+final class KoboldOpenSimplex2ImplementationComparison: XCTestCase {
     func testExample() throws {
         let cpuNoise = OpenSimplex2CPU()
         let gpuNoise = OpenSimplex2Metal()

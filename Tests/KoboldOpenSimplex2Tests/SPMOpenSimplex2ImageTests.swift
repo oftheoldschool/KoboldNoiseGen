@@ -1,8 +1,8 @@
 import XCTest
 import simd
-@testable import SPMOpenSimplex2
+@testable import KoboldOpenSimplex2
 
-final class SPMOpenSimplex2ImageTests: XCTestCase {
+final class KoboldOpenSimplex2ImageTests: XCTestCase {
     func testExample() throws {
         let device = MTLCreateSystemDefaultDevice()!
         let noiseMachine = OpenSimplex2Metal(device: device)

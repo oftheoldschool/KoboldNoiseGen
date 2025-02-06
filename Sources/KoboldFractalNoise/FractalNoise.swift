@@ -1,4 +1,4 @@
-@_exported import SPMOpenSimplex2
+@_exported import KoboldOpenSimplex2
 
 public enum FractalNoiseTypeParameters {
     case OpenSimplex2(OpenSimplex2NoiseParameters)

@@ -3,23 +3,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "SPMNoiseGeneration",
+    name: "KoboldNoiseGeneration",
     products: [
         .library(
-            name: "SPMNoiseGeneration",
-            targets: ["SPMFractalNoise", "SPMOpenSimplex2"]),
+            name: "KoboldNoiseGeneration",
+            targets: ["KoboldFractalNoise", "KoboldOpenSimplex2"]),
     ],
     targets: [
         .target(
-            name: "SPMFractalNoise",
-            dependencies: ["SPMOpenSimplex2"]),
+            name: "KoboldFractalNoise",
+            dependencies: ["KoboldOpenSimplex2"]),
         .target(
-            name: "SPMOpenSimplex2"),
+            name: "KoboldOpenSimplex2"),
         .testTarget(
-            name: "SPMFractalNoiseTests",
-            dependencies: ["SPMFractalNoise"]),
+            name: "KoboldFractalNoiseTests",
+            dependencies: ["KoboldFractalNoise"]),
         .testTarget(
-            name: "SPMOpenSimplex2Tests",
-            dependencies: ["SPMOpenSimplex2"]),
+            name: "KoboldOpenSimplex2Tests",
+            dependencies: ["KoboldOpenSimplex2"]),
     ]
 )

@@ -1,4 +1,4 @@
-# SPM Noise Generation
+# Kobold Noise Generation
 
 A Swift Package containing noise generation functionality.
 
@@ -10,22 +10,22 @@ Each noise module comes with two implementations:
 
 The use case for the second approach is for a Metal project in Swift Playgrounds where Metal shader files can't be used directly but shader code must be provided as a string to load into a MTLLibrary.
 
-### SPM Fractal Noise
+### Fractal Noise
 
 Fractional Brownian Motion implementation over a noise function.
 
-### SPM Open Simplex 2
+### Open Simplex 2
 
 A port of [KdotJPG](https://github.com/KdotJPG)'s [Open Simplex 2](https://github.com/KdotJPG/OpenSimplex2) for Swift/Metal.
 
 ## Usage
 
-Define a dependency from the source package to this one ([Swift Package Manager Docs](https://github.com/apple/swift-package-manager/blob/main/Documentation/Usage.md#defining-dependencies)). 
+Define a dependency from the source package to this one ([Swift Package Manager Docs](https://github.com/apple/swift-package-manager/blob/main/Documentation/Usage.md#defining-dependencies)).
 
 To use the CPU implementation you can run:
 
 ```swift
-import SPMFractalNoise
+import KoboldFractalNoise
 
 ...
 

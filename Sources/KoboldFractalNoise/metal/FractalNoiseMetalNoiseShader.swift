@@ -1,6 +1,6 @@
 import Foundation
 import simd
-import SPMOpenSimplex2
+import KoboldOpenSimplex2
 
 protocol FractalNoiseMetalNoiseShader {
     static var baseFunction: String { get }
