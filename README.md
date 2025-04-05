@@ -46,7 +46,7 @@ let fractalNoiseParameters = FractalNoiseParameters(
     warpIterations: 3,
     warpScale: 200)
 
-let noise: Float = openSimplex2.noise3(
+let noise: Float = fractalNoise.noise3(
     fractalNoiseParameters: fractalNoiseParameters,
     coord: SIMD3<Float>(4.3, 2.0, 1.4))
 ```
