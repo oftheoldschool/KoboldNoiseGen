@@ -64,7 +64,7 @@ public class OpenSimplex2Metal {
         let (groupCount, groupCountRemainder) = inputCount.quotientAndRemainder(dividingBy: groupWidth)
         let finalGroupCount = groupCount + (groupCountRemainder > 0 ? 1 : 0)
 
-        if #available(iOS 14.0, macOS 11.0, *), device.supportsFamily(.common3) {
+        if #available(iOS 14.0, macOS 11.0, *), device.supportsFamily(.apple4) {
             let gridSize = MTLSize(width: groupWidth * finalGroupCount, height: 1, depth: 1)
             commandEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: groupSize)
         } else {
