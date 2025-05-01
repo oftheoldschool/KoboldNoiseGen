@@ -64,7 +64,9 @@ public class FractalNoiseMetal {
 
         let inByteLength = MemoryLayout<T>.stride * inputCount
         if inByteLength < 4 * 1024 {
-            commandEncoder.setBytes(data, length: inByteLength, index: 1)
+            data.withUnsafeBytes { rawBufferPointer in
+                commandEncoder.setBytes(rawBufferPointer.baseAddress!, length: inByteLength, index: 1)
+            }
         } else {
             let inBuffer = device.makeBuffer(length: inByteLength, options: [.storageModeShared])!
             uploadToBuffer(inBuffer, data: data, offset: 0)
@@ -80,9 +82,13 @@ public class FractalNoiseMetal {
         let (groupCount, groupCountRemainder) = inputCount.quotientAndRemainder(dividingBy: groupWidth)
         let finalGroupCount = groupCount + (groupCountRemainder > 0 ? 1 : 0)
 
-        let gridSize = MTLSize(width: groupWidth * finalGroupCount, height: 1, depth: 1)
-
-        commandEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: groupSize)
+        if #available(iOS 14.0, macOS 11.0, *), device.supportsFamily(.common3) {
+            let gridSize = MTLSize(width: groupWidth * finalGroupCount, height: 1, depth: 1)
+            commandEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: groupSize)
+        } else {
+            let gridSize = MTLSize(width: finalGroupCount, height: 1, depth: 1)
+            commandEncoder.dispatchThreadgroups(gridSize, threadsPerThreadgroup: groupSize)
+        }
 
         commandEncoder.endEncoding()
 
@@ -94,7 +100,10 @@ public class FractalNoiseMetal {
 
     private func uploadToBuffer<T>(_ buffer: MTLBuffer, data: [T], offset: Int = 0) {
         let memoryPointer = buffer.contents().advanced(by: offset)
-        memcpy(memoryPointer, data, MemoryLayout<T>.stride * data.count)
+        let typedPointer = memoryPointer.bindMemory(to: T.self, capacity: data.count)
+        for (index, element) in data.enumerated() {
+            typedPointer[index] = element
+        }
     }
 
     private func downloadFromBuffer<T>(_ buffer: MTLBuffer, count: Int, offset: Int = 0) -> [T] {

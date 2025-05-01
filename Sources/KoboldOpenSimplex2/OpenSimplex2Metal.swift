@@ -64,9 +64,13 @@ public class OpenSimplex2Metal {
         let (groupCount, groupCountRemainder) = inputCount.quotientAndRemainder(dividingBy: groupWidth)
         let finalGroupCount = groupCount + (groupCountRemainder > 0 ? 1 : 0)
 
-        let gridSize = MTLSize(width: groupWidth * finalGroupCount, height: 1, depth: 1)
-
-        commandEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: groupSize)
+        if #available(iOS 14.0, macOS 11.0, *), device.supportsFamily(.common3) {
+            let gridSize = MTLSize(width: groupWidth * finalGroupCount, height: 1, depth: 1)
+            commandEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: groupSize)
+        } else {
+            let gridSize = MTLSize(width: finalGroupCount, height: 1, depth: 1)
+            commandEncoder.dispatchThreadgroups(gridSize, threadsPerThreadgroup: groupSize)
+        }
 
         commandEncoder.endEncoding()
 
@@ -78,7 +82,10 @@ public class OpenSimplex2Metal {
 
     private func uploadToBuffer<T>(_ buffer: MTLBuffer, data: [T], offset: Int = 0) {
         let memoryPointer = buffer.contents().advanced(by: offset)
-        memcpy(memoryPointer, data, MemoryLayout<T>.stride * data.count)
+        let typedPointer = memoryPointer.bindMemory(to: T.self, capacity: data.count)
+        for (index, element) in data.enumerated() {
+            typedPointer[index] = element
+        }
     }
 
     private func downloadFromBuffer<T>(_ buffer: MTLBuffer, count: Int, offset: Int = 0) -> [T] {
@@ -212,4 +219,3 @@ public extension OpenSimplex2NoiseParameters {
             noise4Variant: self.noise4Variant.toMetal())
     }
 }
-
