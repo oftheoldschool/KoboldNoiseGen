@@ -22,7 +22,6 @@ public enum FractalNoiseMetalTypeParameters {
     case OpenSimplex2(OpenSimplex2MetalParameters)
 }
 
-
 public struct FractalNoiseMetalParameters {
     public let lacunarity: Float
     public let gain: Float

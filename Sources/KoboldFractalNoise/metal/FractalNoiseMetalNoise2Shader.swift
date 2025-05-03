@@ -7,9 +7,11 @@ public class FractalNoiseMetalNoise2: FractalNoiseMetalNoiseShader {
         constant FractalNoiseMetalParameters &uniforms [[ buffer(0) ]],
         constant const float2 * in                     [[ buffer(1) ]],
         device float * out                             [[ buffer(2) ]],
-        uint2 thread_position_in_grid                  [[ thread_position_in_grid ]]
+        constant uint & dataCount                      [[ buffer(3) ]],
+        uint2 thread_position_in_grid                  [[ thread_position_in_grid ]],
+        uint2 threads_per_grid                         [[ threads_per_grid ]]
     ) {
-        int index = thread_position_in_grid.x;
+        uint index = thread_position_in_grid.x;
     }
 
 """
