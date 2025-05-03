@@ -6,15 +6,14 @@ public class FractalNoiseMetalNoise3: FractalNoiseMetalNoiseShader {
     kernel void \(functionName)(
         constant FractalNoiseMetalParameters &uniforms [[ buffer(0) ]],
         constant const float3 * in                     [[ buffer(1) ]],
-        constant uint & inLength                       [[ buffer(2) ]],
-        device float * out                             [[ buffer(3) ]],
-        constant uint & outLength                      [[ buffer(4) ]],
+        device float * out                             [[ buffer(2) ]],
+        constant uint & dataCount                      [[ buffer(3) ]],
         uint2 thread_position_in_grid                  [[ thread_position_in_grid ]],
         uint2 threads_per_grid                         [[ threads_per_grid ]]
     ) {
         uint index = thread_position_in_grid.x;
         
-        if (index < inLength && index < outLength) {
+        if (index < dataCount) {
             out[index] = fbm3Warp(uniforms, in[index]);
         }
     }
