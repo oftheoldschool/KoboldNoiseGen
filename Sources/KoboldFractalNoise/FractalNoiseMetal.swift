@@ -65,19 +65,25 @@ public class FractalNoiseMetal {
         commandEncoder.setComputePipelineState(pipeline)
         commandEncoder.setBytes(&uniforms, length: MemoryLayout<FractalNoiseMetalParameters>.stride, index: 0)
 
-        let inByteLength = MemoryLayout<T>.stride * inputCount
+        let inByteLength: Int = MemoryLayout<T>.stride * inputCount
+        var inputLength: UInt32
+        var outputLength = UInt32(paddedOuputLength)
         if inByteLength < 4 * 1024 {
             data.withUnsafeBytes { rawBufferPointer in
                 commandEncoder.setBytes(rawBufferPointer.baseAddress!, length: inByteLength, index: 1)
             }
+            inputLength = UInt32(inByteLength)
         } else {
             let paddedInputLength = inByteLength + (padding > 0 ? (padding - inByteLength % padding) : 0)
             let inBuffer = device.makeBuffer(length: paddedInputLength, options: [.storageModeShared])!
             inBuffer.label = "Noise Input Buffer"
             uploadToBuffer(inBuffer, data: data, offset: 0)
             commandEncoder.setBuffer(inBuffer, offset: 0, index: 1)
+            inputLength = UInt32(paddedInputLength)
         }
-        commandEncoder.setBuffer(outBuffer, offset: 0, index: 2)
+        commandEncoder.setBytes(&inputLength, length: MemoryLayout<Int32>.size, index: 2)
+        commandEncoder.setBuffer(outBuffer, offset: 0, index: 3)
+        commandEncoder.setBytes(&outputLength, length: MemoryLayout<Int32>.size, index: 4)
 
         let groupWidth = inputCount > pipeline.maxTotalThreadsPerThreadgroup
         ? pipeline.maxTotalThreadsPerThreadgroup

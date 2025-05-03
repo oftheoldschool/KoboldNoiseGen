@@ -6,16 +6,15 @@ public class FractalNoiseMetalNoise3: FractalNoiseMetalNoiseShader {
     kernel void \(functionName)(
         constant FractalNoiseMetalParameters &uniforms [[ buffer(0) ]],
         constant const float3 * in                     [[ buffer(1) ]],
-        device float * out                             [[ buffer(2) ]],
+        uint inLength                                  [[ buffer(2) ]],
+        device float * out                             [[ buffer(3) ]],
+        uint outLength                                 [[ buffer(4) ]],
         uint2 thread_position_in_grid                  [[ thread_position_in_grid ]],
         uint2 threads_per_grid                         [[ threads_per_grid ]]
     ) {
         uint index = thread_position_in_grid.x;
-        uint inLength = metal::get_buffer_size(in) / sizeof(float3);
-        uint outLength = metal::get_buffer_size(out) / sizeof(float);
-        uint bufferLength = min(inLength, outLength);
         
-        if (index < bufferLength) {
+        if (index < inLength && index < outLength) {
             out[index] = fbm3Warp(uniforms, in[index]);
         }
     }
