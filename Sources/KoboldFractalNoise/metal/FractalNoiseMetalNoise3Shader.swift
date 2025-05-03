@@ -7,11 +7,17 @@ public class FractalNoiseMetalNoise3: FractalNoiseMetalNoiseShader {
         constant FractalNoiseMetalParameters &uniforms [[ buffer(0) ]],
         constant const float3 * in                     [[ buffer(1) ]],
         device float * out                             [[ buffer(2) ]],
-        uint2 thread_position_in_grid                  [[ thread_position_in_grid ]]
+        uint2 thread_position_in_grid                  [[ thread_position_in_grid ]],
+        uint2 threads_per_grid                         [[ threads_per_grid ]]
     ) {
-        int index = thread_position_in_grid.x;
-
-        out[index] = fbm3Warp(uniforms, in[index]);
+        uint index = thread_position_in_grid.x;
+        uint inLength = metal::get_buffer_size(in) / sizeof(float3);
+        uint outLength = metal::get_buffer_size(out) / sizeof(float);
+        uint bufferLength = min(inLength, outLength);
+        
+        if (index < bufferLength) {
+            out[index] = fbm3Warp(uniforms, in[index]);
+        }
     }
 
 """

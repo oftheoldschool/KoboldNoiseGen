@@ -53,6 +53,7 @@ public class FractalNoiseMetal {
         let outByteLength = MemoryLayout<Float>.stride * inputCount
         let paddedOuputLength = outByteLength + (padding > 0 ? (padding - outByteLength % padding) : 0)
         let outBuffer = device.makeBuffer(length: paddedOuputLength, options: [.storageModeShared])!
+        outBuffer.label = "Noise Output Buffer"
 
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
               let commandEncoder = commandBuffer.makeComputeCommandEncoder() else {
@@ -72,6 +73,7 @@ public class FractalNoiseMetal {
         } else {
             let paddedInputLength = inByteLength + (padding > 0 ? (padding - inByteLength % padding) : 0)
             let inBuffer = device.makeBuffer(length: paddedInputLength, options: [.storageModeShared])!
+            inBuffer.label = "Noise Input Buffer"
             uploadToBuffer(inBuffer, data: data, offset: 0)
             commandEncoder.setBuffer(inBuffer, offset: 0, index: 1)
         }
