@@ -6,9 +6,9 @@ public class FractalNoiseMetalNoise3: FractalNoiseMetalNoiseShader {
     kernel void \(functionName)(
         constant FractalNoiseMetalParameters &uniforms [[ buffer(0) ]],
         constant const float3 * in                     [[ buffer(1) ]],
-        uint inLength                                  [[ buffer(2) ]],
+        constant uint & inLength                       [[ buffer(2) ]],
         device float * out                             [[ buffer(3) ]],
-        uint outLength                                 [[ buffer(4) ]],
+        constant uint & outLength                      [[ buffer(4) ]],
         uint2 thread_position_in_grid                  [[ thread_position_in_grid ]],
         uint2 threads_per_grid                         [[ threads_per_grid ]]
     ) {
