@@ -1,0 +1,93 @@
+#ifndef FBM_NOISE3_BASE
+#define FBM_NOISE3_BASE(OCTAVE_INDEX)         if (OCTAVE_INDEX < octaves) {             float3 scaledCoord = noiseCoord * frequency;             fractalNoise *= (1 / (amplitude + 1));             fractalNoise += amplitude * getNoiseValue3(uniforms, scaledCoord);             frequency *= lacunarity;             amplitude *= gain;         };
+#endif
+
+float getNoiseValue3(
+    FractalNoiseMetalParameters uniforms,
+    float3 coord
+) {
+    switch (uniforms.noiseType) {
+        case FractalNoiseMetalType::openSimplex2: {
+            float (*openSimplexFunction)(long, float, float, float);
+            switch (uniforms.openSimplex2Noise3Variant) {
+                case OpenSimplex2MetalNoise3Variant::xy:
+                    openSimplexFunction = noise3_ImproveXY;
+                    break;
+                case OpenSimplex2MetalNoise3Variant::xz:
+                    openSimplexFunction = noise3_ImproveXZ;
+                    break;
+                case OpenSimplex2MetalNoise3Variant::fallback:
+                    openSimplexFunction = noise3_Fallback;
+                    break;
+            }
+            return openSimplexFunction(
+               uniforms.openSimplex2Seed,
+               coord.x,
+               coord.y,
+               coord.z);
+        }
+        case FractalNoiseMetalType::voronoi: {
+            VoronoiMetalParameters voronoiParams;
+            voronoiParams.seed = uniforms.voronoiSeed;
+            voronoiParams.distanceFunction = uniforms.voronoiDistanceFunction;
+            voronoiParams.returnType = uniforms.voronoiReturnType;
+            voronoiParams.jitter = uniforms.voronoiJitter;
+            voronoiParams.minkowskiP = uniforms.voronoiMinkowskiP;
+            return voronoiNoise3Base(voronoiParams, coord);
+        }
+    }
+    return 0.0;
+}
+
+float fbm3Base(
+    FractalNoiseMetalParameters uniforms,
+    float3 inCoord
+) {
+    float amplitude = uniforms.startingAmplitude;
+    float frequency = uniforms.startingFrequency;
+    float gain = uniforms.gain;
+    float lacunarity = uniforms.lacunarity;
+
+    int octaves = uniforms.octaves;
+
+    float3 noiseCoord = inCoord;
+    float fractalNoise = 0;
+
+    FNOISE_REPEAT(8, FBM_NOISE3_BASE)
+
+    return min(max(fractalNoise, -1.f), 1.f);
+}
+
+#ifndef FBM_NOISE3_WARP
+#define FBM_NOISE3_WARP(ITERATION_INDEX)         if (ITERATION_INDEX < warpIterations) {             fractalNoise = fbm3Base(uniforms, noiseCoord + fractalNoise * warpScale);         };
+#endif
+
+float fbm3Warp(
+    FractalNoiseMetalParameters uniforms,
+    float3 inCoord
+) {
+    int warpIterations = uniforms.warpIterations;
+    float warpScale = uniforms.warpScale;
+    float3 noiseCoord = inCoord * uniforms.coordinateScale;
+    float fractalNoise = 0;
+
+    FNOISE_REPEAT(8, FBM_NOISE3_WARP)
+
+    return fractalNoise;
+}
+
+kernel void fractalNoise3(
+    constant FractalNoiseMetalParameters &uniforms [[ buffer(0) ]],
+    constant const float3 * in                     [[ buffer(1) ]],
+    device float * out                             [[ buffer(2) ]],
+    constant uint & dataCount                      [[ buffer(3) ]],
+    uint2 thread_position_in_grid                  [[ thread_position_in_grid ]],
+    uint2 threads_per_grid                         [[ threads_per_grid ]]
+) {
+    uint index = thread_position_in_grid.x;
+
+    if (index < dataCount) {
+        out[index] = fbm3Warp(uniforms, in[index]);
+    }
+}
+

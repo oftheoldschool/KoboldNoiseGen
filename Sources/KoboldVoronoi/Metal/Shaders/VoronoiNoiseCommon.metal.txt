@@ -1,0 +1,117 @@
+enum class VoronoiMetalDistanceFunction: int8_t {
+    euclidean = 0,
+    manhattan = 1,
+    chebyshev = 2,
+    minkowski = 3,
+};
+
+enum class VoronoiMetalReturnType: int8_t {
+    distance = 0,
+    cellValue = 1,
+    distance2 = 2,
+    distance2_distance1 = 3,
+};
+
+struct VoronoiMetalParameters {
+    int seed;
+    VoronoiMetalDistanceFunction distanceFunction;
+    VoronoiMetalReturnType returnType;
+    float jitter;
+    float minkowskiP;
+};
+
+constant static long const VORONOI_PRIME_X = 0x5205402B9270C86FL;
+constant static long const VORONOI_PRIME_Y = 0x598CD327003817B5L;
+constant static long const VORONOI_PRIME_Z = 0x5BCC226E9FA0BACBL;
+constant static long const VORONOI_PRIME_W = 0x56CC5227E58F554BL;
+constant static long const VORONOI_HASH_MULTIPLIER = 0x53A3F72DEEC546F5L;
+
+int voronoiFastFloor(float x) {
+    int xi = (int)x;
+    return x < xi ? xi - 1 : xi;
+}
+
+ulong voronoiHash2D(int seed, long xPrimed, long yPrimed) {
+    ulong hash = ((ulong)seed) ^ ((ulong)xPrimed) ^ ((ulong)yPrimed);
+    hash *= VORONOI_HASH_MULTIPLIER;
+    hash ^= hash >> 32;
+    return hash;
+}
+
+ulong voronoiHash3D(int seed, long xPrimed, long yPrimed, long zPrimed) {
+    ulong hash = ((ulong)seed) ^ ((ulong)xPrimed) ^ ((ulong)yPrimed) ^ ((ulong)zPrimed);
+    hash *= VORONOI_HASH_MULTIPLIER;
+    hash ^= hash >> 32;
+    return hash;
+}
+
+ulong voronoiHash4D(int seed, long xPrimed, long yPrimed, long zPrimed, long wPrimed) {
+    ulong hash = ((ulong)seed) ^ ((ulong)xPrimed) ^ ((ulong)yPrimed) ^ ((ulong)zPrimed) ^ ((ulong)wPrimed);
+    hash *= VORONOI_HASH_MULTIPLIER;
+    hash ^= hash >> 32;
+    return hash;
+}
+
+float voronoiHashToFloat(ulong hash) {
+    return float(hash & 0xFFFFFFUL) / float(0xFFFFFFUL);
+}
+
+float voronoiCalculateDistance(
+    VoronoiMetalDistanceFunction distanceFunction,
+    float minkowskiP,
+    float dx,
+    float dy
+) {
+    switch (distanceFunction) {
+        case VoronoiMetalDistanceFunction::euclidean:
+            return sqrt(dx*dx + dy*dy);
+        case VoronoiMetalDistanceFunction::manhattan:
+            return abs(dx) + abs(dy);
+        case VoronoiMetalDistanceFunction::chebyshev:
+            return max(abs(dx), abs(dy));
+        case VoronoiMetalDistanceFunction::minkowski:
+            return pow(pow(abs(dx), minkowskiP) + pow(abs(dy), minkowskiP), 1.0/minkowskiP);
+    }
+    return 0.0;
+}
+
+float voronoiCalculateDistance(
+    VoronoiMetalDistanceFunction distanceFunction,
+    float minkowskiP,
+    float dx,
+    float dy,
+    float dz
+) {
+    switch (distanceFunction) {
+        case VoronoiMetalDistanceFunction::euclidean:
+            return sqrt(dx*dx + dy*dy + dz*dz);
+        case VoronoiMetalDistanceFunction::manhattan:
+            return abs(dx) + abs(dy) + abs(dz);
+        case VoronoiMetalDistanceFunction::chebyshev:
+            return max(abs(dx), max(abs(dy), abs(dz)));
+        case VoronoiMetalDistanceFunction::minkowski:
+            return pow(pow(abs(dx), minkowskiP) + pow(abs(dy), minkowskiP) + pow(abs(dz), minkowskiP), 1.0/minkowskiP);
+    }
+    return 0.0;
+}
+
+float voronoiCalculateDistance(
+    VoronoiMetalDistanceFunction distanceFunction,
+    float minkowskiP,
+    float dx,
+    float dy,
+    float dz,
+    float dw
+) {
+    switch (distanceFunction) {
+        case VoronoiMetalDistanceFunction::euclidean:
+            return sqrt(dx*dx + dy*dy + dz*dz + dw*dw);
+        case VoronoiMetalDistanceFunction::manhattan:
+            return abs(dx) + abs(dy) + abs(dz) + abs(dw);
+        case VoronoiMetalDistanceFunction::chebyshev:
+            return max(max(abs(dx), abs(dy)), max(abs(dz), abs(dw)));
+        case VoronoiMetalDistanceFunction::minkowski:
+            return pow(pow(abs(dx), minkowskiP) + pow(abs(dy), minkowskiP) + pow(abs(dz), minkowskiP) + pow(abs(dw), minkowskiP), 1.0/minkowskiP);
+    }
+    return 0.0;
+}

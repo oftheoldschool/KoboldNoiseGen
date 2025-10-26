@@ -1,0 +1,42 @@
+enum class OpenSimplex2MetalNoise2Variant: int8_t {
+    standard = 0,
+    x = 1,
+};
+
+enum class OpenSimplex2MetalNoise3Variant: int8_t {
+    xy = 0,
+    xz = 1,
+    fallback = 2,
+};
+
+enum class OpenSimplex2MetalNoise4Variant: int8_t {
+    xyz = 0,
+    xyz_xy = 1,
+    xyz_xz = 2,
+    xy_zw = 3,
+    fallback = 4,
+};
+
+struct OpenSimplex2MetalParameters {
+    int seed;
+    OpenSimplex2MetalNoise2Variant noise2Variant;
+    OpenSimplex2MetalNoise3Variant noise3Variant;
+    OpenSimplex2MetalNoise4Variant noise4Variant;
+};
+
+constant static long const PRIME_X = 0x5205402B9270C86FL;
+constant static long const PRIME_Y = 0x598CD327003817B5L;
+constant static long const PRIME_Z = 0x5BCC226E9FA0BACBL;
+constant static long const PRIME_W = 0x56CC5227E58F554BL;
+constant static long const HASH_MULTIPLIER = 0x53A3F72DEEC546F5L;
+constant static float const UNSKEW_2D = -0.21132486540518713;
+
+int fastFloor(float x) {
+    int xi = (int)x;
+    return x < xi ? xi - 1 : xi;
+}
+
+int fastRound(float x) {
+    return x < 0 ? (int)(x - 0.5) : (int)(x + 0.5);
+}
+
