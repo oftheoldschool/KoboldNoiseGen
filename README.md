@@ -12,11 +12,15 @@ The use case for the second approach is for a Metal project in Swift Playgrounds
 
 ### Fractal Noise
 
-Fractional Brownian Motion implementation over a noise function.
+Fractional Brownian Motion (fBm) implementation over a noise function, with optional domain warping.
 
 ### Open Simplex 2
 
 A port of [KdotJPG](https://github.com/KdotJPG)'s [Open Simplex 2](https://github.com/KdotJPG/OpenSimplex2) for Swift/Metal.
+
+### Voronoi
+
+Configurable Voronoi noise supporting multiple distance functions (euclidean, manhattan, chebyshev, minkowski) and return types (distance, cellValue, distance2, distance2MinusDistance1).
 
 ## Usage
 
@@ -27,28 +31,53 @@ To use the CPU implementation you can run:
 ```swift
 import KoboldFractalNoise
 
-...
-
 let fractalNoise = FractalNoiseCPU()
 
+// Example: OpenSimplex2-based fractal noise
 
-let fractalNoiseParameters = FractalNoiseParameters(
-    noiseTypeParameters: .OpenSimplex2(
+let openSimplexParams = FractalNoiseParameters(
+    noiseTypeParameters: .openSimplex2(
         OpenSimplex2NoiseParameters(
             seed: 420,
             noise3Variant: .xz)),
     octaves: 8,
-    lacunarity: 2,
-    hurstExponent: 1,
-    startingAmplitude: 1,
+    lacunarity: 2.0,
+    hurstExponent: 1.0,
+    startingAmplitude: 1.0,
     startingFrequency: 0.0025,
     coordinateScale: 0.5,
     warpIterations: 3,
-    warpScale: 200)
+    warpScale: 200.0
+)
 
-let noise: Float = fractalNoise.noise3(
-    fractalNoiseParameters: fractalNoiseParameters,
-    coord: SIMD3<Float>(4.3, 2.0, 1.4))
+let openSimplexValue: Float = fractalNoise.noise3(
+    fractalNoiseParameters: openSimplexParams,
+    coord: SIMD3<Float>(4.3, 2.0, 1.4)
+)
+
+// Example: Voronoi-based fractal noise
+
+let voronoiParams = FractalNoiseParameters(
+    noiseTypeParameters: .voronoi(
+        VoronoiNoiseParameters(
+            seed: 420,
+            distanceFunction: .euclidean,
+            returnType: .distance,
+            jitter: 1.0)),
+    octaves: 8,
+    lacunarity: 2.0,
+    hurstExponent: 1.0,
+    startingAmplitude: 1.0,
+    startingFrequency: 0.0025,
+    coordinateScale: 0.5,
+    warpIterations: 3,
+    warpScale: 200.0
+)
+
+let voronoiValue: Float = fractalNoise.noise3(
+    fractalNoiseParameters: voronoiParams,
+    coord: SIMD3<Float>(4.3, 2.0, 1.4)
+)
 ```
 
 A Metal reference implementation is provided with the same interface as the CPU implementation. To use it, the above code can be changed to use `FractalNoiseMetal()`. However it creates Metal resources which should be managed by the calling app, so direct usage is not recommended, and the implementation should be used instead as an example of how to generate the Metal shader.
