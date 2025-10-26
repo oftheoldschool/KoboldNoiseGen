@@ -10,7 +10,7 @@ final class KoboldFractalNoiseTests: XCTestCase {
         let imageScale: Float = 1
 
         let fractalNoiseParameters = FractalNoiseParameters(
-            noiseTypeParameters: .OpenSimplex2(
+            noiseTypeParameters: .openSimplex2(
                 OpenSimplex2NoiseParameters(
                     seed: 420,
                     noise3Variant: .xz)),
