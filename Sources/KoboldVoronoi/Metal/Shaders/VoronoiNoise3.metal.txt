@@ -1,0 +1,56 @@
+float voronoiNoise3Base(VoronoiMetalParameters params, float3 coord) {
+    int xr = voronoiFastFloor(coord.x);
+    int yr = voronoiFastFloor(coord.y);
+    int zr = voronoiFastFloor(coord.z);
+
+    float distance1 = MAXFLOAT;
+    float distance2 = MAXFLOAT;
+    ulong closestHash = 0;
+
+    for (int xi = xr - 2; xi <= xr + 2; xi++) {
+        for (int yi = yr - 2; yi <= yr + 2; yi++) {
+            for (int zi = zr - 2; zi <= zr + 2; zi++) {
+                ulong hash = voronoiHash3D(params.seed,
+                                           (long)xi * VORONOI_PRIME_X,
+                                           (long)yi * VORONOI_PRIME_Y,
+                                           (long)zi * VORONOI_PRIME_Z);
+
+                float vecX = (float)xi + params.jitter * (voronoiHashToFloat(hash) - 0.5) * 2.0;
+                float vecY = (float)yi + params.jitter * (voronoiHashToFloat(hash >> 16) - 0.5) * 2.0;
+                float vecZ = (float)zi + params.jitter * (voronoiHashToFloat(hash >> 32) - 0.5) * 2.0;
+
+                float distance = voronoiCalculateDistance(params.distanceFunction, params.minkowskiP,
+                                                          coord.x - vecX, coord.y - vecY, coord.z - vecZ);
+
+                if (distance < distance1) {
+                    distance2 = distance1;
+                    distance1 = distance;
+                    closestHash = hash;
+                } else if (distance < distance2) {
+                    distance2 = distance;
+                }
+            }
+        }
+    }
+
+    switch (params.returnType) {
+        case VoronoiMetalReturnType::distance:
+            return distance1;
+        case VoronoiMetalReturnType::cellValue:
+            return voronoiHashToFloat(closestHash);
+        case VoronoiMetalReturnType::distance2:
+            return distance2;
+        case VoronoiMetalReturnType::distance2_distance1:
+            return distance2 - distance1;
+    }
+    return distance1;
+}
+
+kernel void voronoiNoise3(
+    constant VoronoiMetalParameters& params [[ buffer(0) ]],
+    constant float3* coords [[ buffer(1) ]],
+    device float* out [[ buffer(2) ]],
+    uint index [[ thread_position_in_grid ]]
+) {
+    out[index] = voronoiNoise3Base(params, coords[index]);
+}

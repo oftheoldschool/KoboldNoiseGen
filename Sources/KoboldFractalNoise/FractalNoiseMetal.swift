@@ -1,4 +1,5 @@
 import KoboldOpenSimplex2
+import KoboldVoronoi
 import simd
 import Metal
 
@@ -22,6 +23,8 @@ public class FractalNoiseMetal {
         using namespace metal;
 
         \(OpenSimplex2MetalShaderLoader(dimensionality: [.two, .three, .four]).shader)
+
+        \(VoronoiMetalShaderLoader(dimensionality: [.two, .three, .four]).shader)
 
         \(FractalNoiseMetalShaderLoader(dimensionality: [.two, .three, .four]).shader)
         """

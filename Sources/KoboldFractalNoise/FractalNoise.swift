@@ -1,7 +1,9 @@
 @_exported import KoboldOpenSimplex2
+@_exported import KoboldVoronoi
 
 public enum FractalNoiseTypeParameters {
-    case OpenSimplex2(OpenSimplex2NoiseParameters)
+    case openSimplex2(OpenSimplex2NoiseParameters)
+    case voronoi(VoronoiNoiseParameters)
 }
 
 public struct FractalNoiseParameters {

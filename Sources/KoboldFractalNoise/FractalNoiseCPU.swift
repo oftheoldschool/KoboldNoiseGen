@@ -1,11 +1,14 @@
 import KoboldOpenSimplex2
+import KoboldVoronoi
 import simd
 
 public class FractalNoiseCPU {
     private let openSimplex2: OpenSimplex2CPU
+    private let voronoi: VoronoiCPU
 
     public init() {
         self.openSimplex2 = OpenSimplex2CPU()
+        self.voronoi = VoronoiCPU()
     }
 
     private func getNoise3Value(
@@ -13,9 +16,13 @@ public class FractalNoiseCPU {
         coord: SIMD3<Float>
     ) -> Float {
         switch noiseTypeParameters {
-        case .OpenSimplex2(let parameters):
+        case .openSimplex2(let parameters):
             return openSimplex2.noise3(
                 openSimplex2NoiseParameters: parameters,
+                coord: coord)
+        case .voronoi(let parameters):
+            return voronoi.noise3(
+                voronoiNoiseParameters: parameters,
                 coord: coord)
         }
     }
@@ -37,6 +44,30 @@ extension FractalNoiseCPU: FractalNoise {
         fractalNoiseParameters: FractalNoiseParameters,
         coord: SIMD3<Float>
     ) -> Float {
+        let scaledCoord = coord * fractalNoiseParameters.coordinateScale
+        return fbmWithWarp(fractalNoiseParameters: fractalNoiseParameters, coord: scaledCoord)
+    }
+
+    private func fbmWithWarp(
+        fractalNoiseParameters: FractalNoiseParameters,
+        coord: SIMD3<Float>
+    ) -> Float {
+        var fractalNoise = Float.zero
+
+        for _ in 0..<fractalNoiseParameters.warpIterations {
+            fractalNoise = fbmBase(
+                fractalNoiseParameters: fractalNoiseParameters,
+                coord: coord + fractalNoise * fractalNoiseParameters.warpScale
+            )
+        }
+        
+        return fractalNoise
+    }
+    
+    private func fbmBase(
+        fractalNoiseParameters: FractalNoiseParameters,
+        coord: SIMD3<Float>
+    ) -> Float {
         var fractalNoise = Float.zero
         var amplitude = fractalNoiseParameters.startingAmplitude
         var frequency = fractalNoiseParameters.startingFrequency
@@ -50,6 +81,6 @@ extension FractalNoiseCPU: FractalNoise {
             frequency *= fractalNoiseParameters.lacunarity
             amplitude *= gain
         }
-        return fractalNoise
+        return min(max(fractalNoise, -1.0), 1.0)
     }
 }

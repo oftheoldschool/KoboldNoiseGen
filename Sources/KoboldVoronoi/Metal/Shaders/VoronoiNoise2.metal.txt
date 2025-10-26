@@ -1,0 +1,52 @@
+float voronoiNoise2Base(VoronoiMetalParameters params, float2 coord) {
+    int xr = voronoiFastFloor(coord.x);
+    int yr = voronoiFastFloor(coord.y);
+
+    float distance1 = MAXFLOAT;
+    float distance2 = MAXFLOAT;
+    ulong closestHash = 0;
+
+    for (int xi = xr - 2; xi <= xr + 2; xi++) {
+        for (int yi = yr - 2; yi <= yr + 2; yi++) {
+            ulong hash = voronoiHash2D(params.seed,
+                                       (long)xi * VORONOI_PRIME_X,
+                                       (long)yi * VORONOI_PRIME_Y);
+
+            float vecX = (float)xi + params.jitter * (voronoiHashToFloat(hash) - 0.5) * 2.0;
+            float vecY = (float)yi + params.jitter * (voronoiHashToFloat(hash >> 16) - 0.5) * 2.0;
+
+            float distance = voronoiCalculateDistance(params.distanceFunction, params.minkowskiP,
+                                                      coord.x - vecX, coord.y - vecY);
+
+            if (distance < distance1) {
+                distance2 = distance1;
+                distance1 = distance;
+                closestHash = hash;
+            } else if (distance < distance2) {
+                distance2 = distance;
+            }
+        }
+    }
+
+    switch (params.returnType) {
+        case VoronoiMetalReturnType::distance:
+            return distance1;
+        case VoronoiMetalReturnType::cellValue:
+            return voronoiHashToFloat(closestHash);
+        case VoronoiMetalReturnType::distance2:
+            return distance2;
+        case VoronoiMetalReturnType::distance2_distance1:
+            return distance2 - distance1;
+    }
+    return distance1;
+}
+
+kernel void voronoiNoise2(
+    constant VoronoiMetalParameters& params [[ buffer(0) ]],
+    constant float2* coords [[ buffer(1) ]],
+    device float* out [[ buffer(2) ]],
+    uint index [[ thread_position_in_grid ]]
+) {
+    out[index] = voronoiNoise2Base(params, coords[index]);
+}
+
