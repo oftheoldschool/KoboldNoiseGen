@@ -1,5 +1,12 @@
 #ifndef FBM_NOISE3_BASE
-#define FBM_NOISE3_BASE(OCTAVE_INDEX)         if (OCTAVE_INDEX < octaves) {             float3 scaledCoord = noiseCoord * frequency;             fractalNoise *= (1 / (amplitude + 1));             fractalNoise += amplitude * getNoiseValue3(uniforms, scaledCoord);             frequency *= lacunarity;             amplitude *= gain;         };
+#define FBM_NOISE3_BASE(OCTAVE_INDEX) \
+        if (OCTAVE_INDEX < octaves) { \
+            float3 scaledCoord = noiseCoord * frequency; \
+            fractalNoise *= (1 / (amplitude + 1)); \
+            fractalNoise += amplitude * getNoiseValue3(uniforms, scaledCoord); \
+            frequency *= lacunarity; \
+            amplitude *= gain; \
+        };
 #endif
 
 float getNoiseValue3(
@@ -59,7 +66,10 @@ float fbm3Base(
 }
 
 #ifndef FBM_NOISE3_WARP
-#define FBM_NOISE3_WARP(ITERATION_INDEX)         if (ITERATION_INDEX < warpIterations) {             fractalNoise = fbm3Base(uniforms, noiseCoord + fractalNoise * warpScale);         };
+#define FBM_NOISE3_WARP(ITERATION_INDEX) \
+        if (ITERATION_INDEX < warpIterations) { \
+            fractalNoise = fbm3Base(uniforms, noiseCoord + fractalNoise * warpScale); \
+        };
 #endif
 
 float fbm3Warp(
