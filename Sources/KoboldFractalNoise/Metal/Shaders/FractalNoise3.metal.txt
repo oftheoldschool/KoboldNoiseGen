@@ -100,4 +100,3 @@ kernel void fractalNoise3(
         out[index] = fbm3Warp(uniforms, in[index]);
     }
 }
-

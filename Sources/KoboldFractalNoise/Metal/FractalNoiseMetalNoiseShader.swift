@@ -60,7 +60,6 @@ public extension FractalNoiseMetalParameters {
             self.openSimplex2Noise2Variant = metalParams.noise2Variant
             self.openSimplex2Noise3Variant = metalParams.noise3Variant
             self.openSimplex2Noise4Variant = metalParams.noise4Variant
-            // Set defaults for unused Voronoi parameters
             self.voronoiSeed = 0
             self.voronoiDistanceFunction = .euclidean
             self.voronoiReturnType = .distance
@@ -75,7 +74,6 @@ public extension FractalNoiseMetalParameters {
             self.voronoiReturnType = metalParams.returnType
             self.voronoiJitter = metalParams.jitter
             self.voronoiMinkowskiP = metalParams.minkowskiP
-            // Set defaults for unused OpenSimplex2 parameters
             self.openSimplex2Seed = 0
             self.openSimplex2Noise2Variant = .standard
             self.openSimplex2Noise3Variant = .xy
@@ -124,7 +122,7 @@ public class FractalNoiseMetalShaderLoader {
         return content
     }
 
-    public static var noise2FunctionName = "fractalNoise2"
-    public static var noise3FunctionName = "fractalNoise3"
-    public static var noise4FunctionName = "fractalNoise4"
+    public static let noise2FunctionName = "fractalNoise2"
+    public static let noise3FunctionName = "fractalNoise3"
+    public static let noise4FunctionName = "fractalNoise4"
 }

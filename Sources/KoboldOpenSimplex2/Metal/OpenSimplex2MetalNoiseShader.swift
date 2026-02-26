@@ -85,7 +85,7 @@ public class OpenSimplex2MetalShaderLoader {
         return content
     }
 
-    public static var noise2FunctionName = "openSimplexNoise2"
-    public static var noise3FunctionName = "openSimplexNoise3"
-    public static var noise4FunctionName = "openSimplexNoise4"
+    public static let noise2FunctionName = "openSimplexNoise2"
+    public static let noise3FunctionName = "openSimplexNoise3"
+    public static let noise4FunctionName = "openSimplexNoise4"
 }

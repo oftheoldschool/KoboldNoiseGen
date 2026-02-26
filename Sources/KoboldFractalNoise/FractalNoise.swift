@@ -51,4 +51,3 @@ public protocol FractalNoise {
         coords: [SIMD3<Float>]
     ) -> [Float]
 }
-

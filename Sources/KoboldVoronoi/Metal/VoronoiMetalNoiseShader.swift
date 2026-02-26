@@ -109,7 +109,7 @@ public class VoronoiMetalShaderLoader {
         return content
     }
 
-    public static var noise2FunctionName = "voronoiNoise2"
-    public static var noise3FunctionName = "voronoiNoise3"
-    public static var noise4FunctionName = "voronoiNoise4"
+    public static let noise2FunctionName = "voronoiNoise2"
+    public static let noise3FunctionName = "voronoiNoise3"
+    public static let noise4FunctionName = "voronoiNoise4"
 }
