@@ -73,16 +73,36 @@ public class OpenSimplex2MetalShaderLoader {
     }
     
     public static func loadShaderFile(_ filename: String) -> String {
-        guard let path = Bundle.module.url(
-                forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
-                withExtension: "metal.txt",
-                subdirectory: "Shaders"
-              ),
-              let content = try? String(contentsOf: path, encoding: .utf8
-        ) else {
-            fatalError("Warning: Could not load shader file \(filename), falling back to inline generation")
+        #if SWIFT_PACKAGE
+        // Try Swift Package Manager's resource bundle first
+        if let url = Bundle.module.url(
+            forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
+            withExtension: "metal.txt",
+            subdirectory: "Shaders"
+        ), let content = try? String(contentsOf: url, encoding: .utf8) {
+            return content
         }
-        return content
+        #endif
+
+        // Fallback 2: Try the bundle associated with this type (useful when packaged as a framework)
+        if let url = Bundle(for: OpenSimplex2MetalShaderLoader.self).url(
+            forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
+            withExtension: "metal.txt",
+            subdirectory: "Shaders"
+        ), let content = try? String(contentsOf: url, encoding: .utf8) {
+            return content
+        }
+
+        // Fallback 3: Try the main bundle (useful when resources are copied into the app target)
+        if let url = Bundle.main.url(
+            forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
+            withExtension: "metal.txt",
+            subdirectory: "Shaders"
+        ), let content = try? String(contentsOf: url, encoding: .utf8) {
+            return content
+        }
+
+        fatalError("Warning: Could not load shader file \(filename) from Bundle.module, framework bundle, or main bundle")
     }
 
     public static let noise2FunctionName = "openSimplexNoise2"

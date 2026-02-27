@@ -110,16 +110,36 @@ public class FractalNoiseMetalShaderLoader {
     }
     
     public static func loadShaderFile(_ filename: String) -> String {
-        guard let path = Bundle.module.url(
-                forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
-                withExtension: "metal.txt",
-                subdirectory: "Shaders"
-              ),
-              let content = try? String(contentsOf: path, encoding: .utf8
-        ) else {
-            fatalError("Warning: Could not load shader file \(filename), falling back to inline generation")
+        #if SWIFT_PACKAGE
+        // 1) Swift Package Manager bundle
+        if let url = Bundle.module.url(
+            forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
+            withExtension: "metal.txt",
+            subdirectory: "Shaders"
+        ), let content = try? String(contentsOf: url, encoding: .utf8) {
+            return content
         }
-        return content
+        #endif
+
+        // 2) Framework/class bundle
+        if let url = Bundle(for: FractalNoiseMetalShaderLoader.self).url(
+            forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
+            withExtension: "metal.txt",
+            subdirectory: "Shaders"
+        ), let content = try? String(contentsOf: url, encoding: .utf8) {
+            return content
+        }
+
+        // 3) Main bundle
+        if let url = Bundle.main.url(
+            forResource: filename.replacingOccurrences(of: ".metal.txt", with: ""),
+            withExtension: "metal.txt",
+            subdirectory: "Shaders"
+        ), let content = try? String(contentsOf: url, encoding: .utf8) {
+            return content
+        }
+
+        fatalError("Warning: Could not load shader file \(filename) from Bundle.module, framework bundle, or main bundle")
     }
 
     public static let noise2FunctionName = "fractalNoise2"
