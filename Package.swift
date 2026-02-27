@@ -23,21 +23,21 @@ let package = Package(
             ],
             path: "./Sources/KoboldFractalNoise",
             resources: [
-                .copy("Metal/Shaders")
+                .copy("Resources/Shaders")
             ]
         ),
         .target(
             name: "KoboldOpenSimplex2",
             path: "./Sources/KoboldOpenSimplex2",
             resources: [
-                .copy("Metal/Shaders")
+                .copy("Resources/Shaders")
             ]
         ),
         .target(
             name: "KoboldVoronoi",
             path: "./Sources/KoboldVoronoi",
             resources: [
-                .copy("Metal/Shaders")
+                .copy("Resources/Shaders")
             ]
         ),
         .testTarget(
